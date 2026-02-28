@@ -1,6 +1,6 @@
-import jwt from "jwt";
-import User from "../models/User";
-import {ENV } from "../lib/env.js";
+import jwt from "jsonwebtoken";
+import User from "../models/User.js";
+import {env} from "../lib/env.js";
 export const protectRoute = async (req,res,next) =>{
     try {
         const token = req.cookies.jwt;
@@ -9,7 +9,7 @@ export const protectRoute = async (req,res,next) =>{
         const decoded  = jwt.verify(token,ENV.JWT_SECRET_KEY);
         if(!decoded) return res.status(401).json({message:"Invalid  token provided"});
 
-        const user = await User.findOne(decoded.userId).select(-passw);
+        const user = await User.findOne(decoded.userId).select("-password");
         if(!user) return res.status(404).json({message:"User not valid"});
         
         req.user = user;
